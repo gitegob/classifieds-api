@@ -5,7 +5,7 @@ import * as bcrypt from "bcryptjs";
 import { PrismaService } from "../prisma.service";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
-import { ERole } from "./enums/ERole";
+import { ERole } from "./enums/role.enum";
 import { JwtPayload } from "./interfaces/jwt.payload.interface";
 
 @Injectable()

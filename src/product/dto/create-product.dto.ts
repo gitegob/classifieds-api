@@ -19,4 +19,6 @@ export class CreateProductDto {
   image: string;
   @IsDateString()
   dateMfg: Date;
+  @IsNumber()
+  categoryId: number;
 }

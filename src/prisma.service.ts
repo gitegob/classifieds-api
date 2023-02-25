@@ -2,10 +2,13 @@ import {
   Global,
   INestApplication,
   Injectable,
+  Logger,
   OnModuleInit,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PrismaClient } from "@prisma/client";
+import * as bcrypt from "bcryptjs";
+import { ERole } from "./auth/enums/role.enum";
 import { IConstants } from "./_shared/interfaces/constants.interface";
 
 @Injectable()
@@ -87,5 +90,33 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       }
       return next(params);
     });
+  }
+
+  /**
+   * Run database seeds
+   */
+  async seed() {
+    Logger.debug(`Start seeding...`);
+    await this.seedAdmin();
+    Logger.debug(`Seeding finished.`);
+  }
+
+  /**
+   * Seed the admin
+   */
+  private async seedAdmin() {
+    if (!(await this.user.count({ where: { role: ERole.ADMIN } }))) {
+      await this.user.create({
+        data: {
+          name: "Brian Gitego",
+          email: this.configService.get("adminEmail"),
+          password: bcrypt.hashSync(
+            this.configService.get("adminPassword"),
+            10,
+          ),
+          role: ERole.ADMIN,
+        },
+      });
+    }
   }
 }

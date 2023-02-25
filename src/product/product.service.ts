@@ -6,7 +6,7 @@ import {
 import { Prisma, Product, User } from "@prisma/client";
 import { PrismaService } from "../prisma.service";
 import { IPage } from "../_shared/interfaces/pagination.interface";
-import { paginate } from "../_shared/utils/pagination.util";
+import { paginated } from "../_shared/utils/pagination.util";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
 
@@ -14,19 +14,31 @@ import { UpdateProductDto } from "./dto/update-product.dto";
 export class ProductService {
   constructor(private readonly prismaService: PrismaService) {}
   async create(createProductDto: CreateProductDto, user: User) {
+    const category = await this.prismaService.category.findFirst({
+      where: { id: createProductDto.categoryId },
+    });
+    if (!category) throw new NotFoundException("Category not found");
+    delete createProductDto.categoryId;
     const newProduct = await this.prismaService.product.create({
       data: {
         ...createProductDto,
         ownerId: user.id,
+        categoryId: category.id,
       },
     });
     return newProduct;
   }
 
   async findAll(page: number, limit: number): Promise<IPage<Product>> {
-    return await paginate<Product, Prisma.ProductFindManyArgs>(
+    return await paginated<Product, Prisma.ProductFindManyArgs>(
       this.prismaService.product,
-      { orderBy: { name: "asc" } },
+      {
+        orderBy: { name: "asc" },
+        include: {
+          category: true,
+          owner: { select: { id: true, name: true } },
+        },
+      },
       page,
       limit,
     );
@@ -35,6 +47,10 @@ export class ProductService {
   async findOne(id: number) {
     const product = await this.prismaService.product.findFirst({
       where: { id },
+      include: {
+        category: true,
+        owner: { select: { id: true, name: true } },
+      },
     });
     if (!product) throw new NotFoundException("Product not found");
     return product;

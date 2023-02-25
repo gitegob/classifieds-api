@@ -1,6 +1,6 @@
 import { applyDecorators, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth } from "@nestjs/swagger";
-import { ERole } from "../enums/ERole";
+import { ERole } from "../enums/role.enum";
 import { JwtGuard } from "../guards/jwt.guard";
 import { RolesGuard } from "../guards/roles.guard";
 import { AllowRoles } from "./roles.decorator";

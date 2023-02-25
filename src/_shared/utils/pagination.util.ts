@@ -9,7 +9,7 @@ import { IPage } from "../interfaces/pagination.interface";
  * @returns Promise<IPage<TModel>>
  * @author [Brian Gitego](https://github.com/gitegob)
  */
-export async function paginate<TModel, TFindManyArgs>(
+export async function paginated<TModel, TFindManyArgs>(
   model: any,
   args: Omit<TFindManyArgs, "take" | "skip">,
   page = 0,
@@ -31,5 +31,33 @@ export async function paginate<TModel, TFindManyArgs>(
     itemsPerPage: size,
     totalPages: Math.ceil(totalItems / size),
     currentPage: page,
+  };
+}
+
+/**
+ * Get unpaginated results from prisma query but send them in a paginated format
+ * @param model Prisma model
+ * @param args Find args
+ * @returns Promise<IPage<TModel>>
+ * @author [Brian Gitego](https://github.com/gitegob)
+ */
+export async function unpaginated<TModel, TFindManyArgs>(
+  model: any,
+  args: Omit<TFindManyArgs, "take" | "skip">,
+): Promise<IPage<TModel>> {
+  const items = (await model.findMany({
+    ...args,
+  })) as TModel[];
+  args["include"] = null;
+  const totalItems = await model.count({
+    ...args,
+  });
+  return {
+    items,
+    totalItems,
+    itemCount: items.length,
+    itemsPerPage: totalItems,
+    totalPages: 1,
+    currentPage: 0,
   };
 }
