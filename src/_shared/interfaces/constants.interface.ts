@@ -5,6 +5,8 @@ export interface IConstants {
   jwt?: IJwtConfig;
   allowedOrigins?: string[];
   swaggerEnabled?: boolean;
+  adminEmail?: string;
+  adminPassword?: string;
 }
 
 interface IJwtConfig {

@@ -1,4 +1,4 @@
-import { ERole } from "../enums/ERole";
+import { ERole } from "../enums/role.enum";
 
 export interface JwtPayload {
   id: number;

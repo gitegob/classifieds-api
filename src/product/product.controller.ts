@@ -13,7 +13,7 @@ import { ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Product, User } from "@prisma/client";
 import { Auth } from "../auth/decorators/auth.decorator";
 import { GetUser } from "../auth/decorators/get-user.decorator";
-import { ERole } from "../auth/enums/ERole";
+import { ERole } from "../auth/enums/role.enum";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { ProductService } from "./product.service";
@@ -48,7 +48,7 @@ export class ProductController {
   @Patch(":id")
   @Auth(ERole.SELLER)
   async update(
-    @Param("id") id: string,
+    @Param("id", ParseIntPipe) id: string,
     @Body() updateProductDto: UpdateProductDto,
     @GetUser() user: User,
   ) {
@@ -57,7 +57,7 @@ export class ProductController {
 
   @Delete(":id")
   @Auth(ERole.SELLER)
-  async remove(@Param("id") id: string, @GetUser() user: User) {
+  async remove(@Param("id", ParseIntPipe) id: string, @GetUser() user: User) {
     return await this.productService.remove(+id, user);
   }
 }
