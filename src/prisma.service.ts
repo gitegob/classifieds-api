@@ -6,7 +6,7 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PrismaClient } from "@prisma/client";
-import { IConstants } from "./_shared/config/IConstants";
+import { IConstants } from "./_shared/interfaces/constants.interface";
 
 @Injectable()
 @Global()
