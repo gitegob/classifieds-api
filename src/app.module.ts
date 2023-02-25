@@ -3,6 +3,7 @@ import { ConfigModule } from "@nestjs/config";
 import { APP_PIPE } from "@nestjs/core";
 import { AuthModule } from "./auth/auth.module";
 import { PrismaModule } from "./prisma.module";
+import { ProductModule } from "./product/product.module";
 import { constants } from "./_shared/config/config";
 
 @Module({
@@ -13,6 +14,7 @@ import { constants } from "./_shared/config/config";
       load: [constants],
     }),
     AuthModule,
+    ProductModule,
   ],
   controllers: [],
   providers: [

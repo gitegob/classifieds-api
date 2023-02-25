@@ -4,7 +4,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { PrismaClient, User } from "@prisma/client";
 import "dotenv/config";
 import { ExtractJwt, Strategy } from "passport-jwt";
-import { IConstants } from "../../_shared/config/IConstants";
+import { IConstants } from "../../_shared/interfaces/constants.interface";
 import { JwtPayload } from "../interfaces/jwt.payload.interface";
 
 @Injectable()

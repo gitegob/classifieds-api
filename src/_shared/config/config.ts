@@ -2,7 +2,7 @@ import { INestApplication, UnauthorizedException } from "@nestjs/common";
 import { CorsOptions } from "@nestjs/common/interfaces/external/cors-options.interface";
 import { ConfigService } from "@nestjs/config";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { IConstants } from "./IConstants";
+import { IConstants } from "../interfaces/constants.interface";
 
 /**
  * Defines the application config variables
