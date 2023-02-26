@@ -5,7 +5,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Res,
   UseGuards,
 } from "@nestjs/common";
 import { ApiSecurity, ApiTags } from "@nestjs/swagger";
@@ -38,10 +37,7 @@ export class AuthController {
   @Get("/refresh-token")
   @ApiSecurity("refresh")
   @UseGuards(JwtRefreshGuard)
-  async refreshToken(
-    @Res({ passthrough: true }) response: Response,
-    @GetUser() user: User,
-  ): Promise<LoginResultDto> {
+  async refreshToken(@GetUser() user: User): Promise<LoginResultDto> {
     const { accessToken, refreshToken } = await this.authService.refreshToken(
       user,
     );
