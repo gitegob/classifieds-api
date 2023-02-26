@@ -13,7 +13,11 @@ import { UpdateProductDto } from "./dto/update-product.dto";
 @Injectable()
 export class ProductService {
   constructor(private readonly prismaService: PrismaService) {}
-  async create(createProductDto: CreateProductDto, user: User) {
+
+  async create(
+    createProductDto: CreateProductDto,
+    user: User,
+  ): Promise<Product> {
     const category = await this.prismaService.category.findFirst({
       where: { id: createProductDto.categoryId },
     });
@@ -44,7 +48,7 @@ export class ProductService {
     );
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Product> {
     const product = await this.prismaService.product.findFirst({
       where: { id },
       include: {
@@ -56,7 +60,11 @@ export class ProductService {
     return product;
   }
 
-  async update(id: number, updateProductDto: UpdateProductDto, user: User) {
+  async update(
+    id: number,
+    updateProductDto: UpdateProductDto,
+    user: User,
+  ): Promise<Product> {
     const product = await this.findOne(id);
     if (product.ownerId !== user.id)
       throw new ForbiddenException("Product not editable by you");
@@ -67,11 +75,10 @@ export class ProductService {
     return this.findOne(id);
   }
 
-  async remove(id: number, user: User) {
+  async remove(id: number, user: User): Promise<void> {
     const product = await this.findOne(id);
     if (product.ownerId !== user.id)
       throw new ForbiddenException("You cannot delete this product");
     await this.prismaService.product.delete({ where: { id } });
-    return `Product ${id} deleted`;
   }
 }

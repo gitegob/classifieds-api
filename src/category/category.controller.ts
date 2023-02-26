@@ -9,8 +9,10 @@ import {
   Post,
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { Category } from "@prisma/client";
 import { Auth } from "../auth/decorators/auth.decorator";
 import { ERole } from "../auth/enums/role.enum";
+import { IPage } from "../_shared/interfaces/pagination.interface";
 import { CategoryService } from "./category.service";
 import { CreateCategoryDto } from "./dto/create-category.dto";
 import { UpdateCategoryDto } from "./dto/update-category.dto";
@@ -23,12 +25,14 @@ export class CategoryController {
 
   @Post()
   @Auth(ERole.ADMIN)
-  async create(@Body() createCategoryDto: CreateCategoryDto) {
+  async create(
+    @Body() createCategoryDto: CreateCategoryDto,
+  ): Promise<Category> {
     return await this.categoryService.create(createCategoryDto);
   }
 
   @Get()
-  async findAll() {
+  async findAll(): Promise<IPage<Category>> {
     return await this.categoryService.findAll();
   }
 
@@ -37,13 +41,14 @@ export class CategoryController {
   async update(
     @Param("id", ParseIntPipe) id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
-  ) {
+  ): Promise<Category> {
     return await this.categoryService.update(+id, updateCategoryDto);
   }
 
   @Delete(":id")
   @Auth(ERole.ADMIN)
-  async remove(@Param("id", ParseIntPipe) id: string) {
-    return await this.categoryService.remove(+id);
+  async remove(@Param("id", ParseIntPipe) id: string): Promise<string> {
+    await this.categoryService.remove(+id);
+    return `Category with id ${id} deleted`;
   }
 }

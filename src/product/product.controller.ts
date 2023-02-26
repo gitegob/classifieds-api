@@ -14,6 +14,7 @@ import { Product, User } from "@prisma/client";
 import { Auth } from "../auth/decorators/auth.decorator";
 import { GetUser } from "../auth/decorators/get-user.decorator";
 import { ERole } from "../auth/enums/role.enum";
+import { IPage } from "../_shared/interfaces/pagination.interface";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { ProductService } from "./product.service";
@@ -36,12 +37,15 @@ export class ProductController {
   @Get()
   @ApiQuery({ name: "page", required: false })
   @ApiQuery({ name: "limit", required: false })
-  async findAll(@Query("page") page?: number, @Query("limit") limit?: number) {
+  async findAll(
+    @Query("page") page?: number,
+    @Query("limit") limit?: number,
+  ): Promise<IPage<Product>> {
     return await this.productService.findAll(page || 0, limit || 10);
   }
 
   @Get(":id")
-  async findOne(@Param("id", ParseIntPipe) id: string) {
+  async findOne(@Param("id", ParseIntPipe) id: string): Promise<Product> {
     return await this.productService.findOne(+id);
   }
 
@@ -51,13 +55,17 @@ export class ProductController {
     @Param("id", ParseIntPipe) id: string,
     @Body() updateProductDto: UpdateProductDto,
     @GetUser() user: User,
-  ) {
+  ): Promise<Product> {
     return await this.productService.update(+id, updateProductDto, user);
   }
 
   @Delete(":id")
   @Auth(ERole.SELLER)
-  async remove(@Param("id", ParseIntPipe) id: string, @GetUser() user: User) {
-    return await this.productService.remove(+id, user);
+  async remove(
+    @Param("id", ParseIntPipe) id: string,
+    @GetUser() user: User,
+  ): Promise<string> {
+    await this.productService.remove(+id, user);
+    return `Product ${id} deleted`;
   }
 }
